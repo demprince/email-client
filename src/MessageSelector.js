@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from "react-router-dom";
+import { Button } from "reactstrap";
 import './MessageSelector.css';
 
 class Message extends Component {
@@ -16,12 +18,13 @@ class Message extends Component {
             <div className="Message">
                 <p className="message__title">{this.props.data.title}</p>
                 <p className="message__subject">{this.props.data.subject}</p>
-                <button className="message__more" onClick={this.handleChange}>More</button>
+                <Button className="message__more" onClick={this.handleChange}>More</Button>
+                {/* <Link className="message__more" to={`${match.url}/preview/${this.props.data.id}`}>More</Link> */}
+                {/* <Link className="message__more" onClick={this.handleChange} to={`/preview/${this.props.data.id}/html`}>More</Link> */}
             </div>
         )
     }
 }
-
 class MessageSelector extends Component {
     render() {
         const { selectMessage } = this.props;

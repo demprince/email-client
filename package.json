@@ -5,10 +5,12 @@
   "dependencies": {
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "react-scripts": "2.0.4",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-transition-group": "^2.4.0"
+    "react-scripts": "2.0.4",
+    "react-transition-group": "^2.4.0",
+    "reactstrap": "^6.5.0",
+    "bootstrap": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
