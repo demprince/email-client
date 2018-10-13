@@ -1,0 +1,31 @@
+.MessageSelector {
+    /* background-color: gray; */
+    width: 70%;
+    max-width: 1100px;
+    min-width: 300px;
+    margin: auto;
+}
+
+.Message {
+    display: grid;
+    grid-template-columns: 2fr 3fr 1fr;
+    padding: 0.6em;
+}
+
+.Message__title {
+    padding: 0 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.Message__subject {
+    padding: 0 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.Message__button {
+    padding: 0;
+}
