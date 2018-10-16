@@ -8,20 +8,19 @@ import './MessagePreview.css';
 
 const githubUrl = "https://gist.githubusercontent.com/OrganicPanda/17da0fa8fda252972f9753c9e9738173/raw/f7198d502f40372c99273365f5f37ab0a6c63194/";
 
+
 class MessageContent extends Component {
     render() {
         const html = {
             __html: this.props.data.replace('\n', '<br/>')
         };
         return (
-            <div className="preview-panel">
-                <div className={this.props.isPlain ? 'pre-wrap' : ''} dangerouslySetInnerHTML={html} />
-            </div>
+            <div className={this.props.isPlain ? 'pre-wrap preview-panel' : 'preview-panel'} dangerouslySetInnerHTML={html} />
         );
     }
 }
 
-class Main extends Component {
+class MessageContainer extends Component {
     render() {
         const { match, email } = this.props;
         if (!email.isValid) {
@@ -29,16 +28,18 @@ class Main extends Component {
         }
 
         return (
-            <div className="message-preview container mt-5">
+            <div className="message-preview mt-2">
 
-                <table className="table table-borderless">
+                <NavLink className="btn btn-secondary" exact to="/" >Back</NavLink>
+
+                <table className="table table-borderless mt-3">
                     <tbody>
                         <tr>
-                            <th className="text-nowrap w-25" scope="row">Title:</th>
+                            <th className="text-nowrap" scope="row">Title:</th>
                             <td>{email.title}</td>
                         </tr>
                         <tr>
-                            <th className="text-nowrap w-25" scope="row">Subject:</th>
+                            <th className="text-nowrap" scope="row">Subject:</th>
                             <td>{email.subject}</td>
                         </tr>
                     </tbody>
@@ -77,14 +78,16 @@ class MessagePreview extends Component {
     }
 
     componentDidMount() {
-        this.fetchData();
+        const { match: { params } } = this.props;
+        const emailPath = `${githubUrl}email-${params.id}.json`;
+        this.fetchData(emailPath);
     }
 
-    fetchData() {
-        const { match: { params }, history } = this.props;
-        const emailPath = `${githubUrl}email-${params.id}.json`;
+    fetchData(url) {
 
-        fetch(emailPath)
+        const { history } = this.props;
+
+        fetch(url)
             .then(function (response) {
                 if (response.ok) {
                     return response.json();
@@ -98,6 +101,7 @@ class MessagePreview extends Component {
                         id: parsedJSON.id,
                         title: parsedJSON.name,
                         subject: parsedJSON.subjects.join('\n'),
+                        iframe: `<iframe ref="iframe" width="100%" height="100%" frameBorder="0" class="iframe" src="data:text/html;charset=utf-8,${encodeURI(parsedJSON.body.html)}" />`,
                         html: parsedJSON.body.html,
                         plain: parsedJSON.body.text,
                         isValid: true
@@ -122,13 +126,13 @@ class MessagePreview extends Component {
 
         return (
             <div>
-                {/* Main */}
+                {/* MessageContainer */}
                 <Route path={match.url} render={() => {
                     return (
                         <div className="message-preview container mt-5">
                             {
                                 !isLoading && email !== {} ? (
-                                    <Main email={email} isLoading={isLoading} match={match} />
+                                    <MessageContainer email={email} isLoading={isLoading} match={match} />
                                 ) : <Loader />
                             }
                         </div>

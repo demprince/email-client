@@ -26,12 +26,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData(emailsUrl);
   }
 
-  fetchData() {
+  fetchData(url) {
 
-    fetch(emailsUrl)
+    fetch(url)
       .then(function (response) {
         if (response.ok) {
           return response.json();
