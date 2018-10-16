@@ -35,30 +35,36 @@ class App extends Component {
       .then(function (response) {
         if (response.ok) {
           return response.json();
+        } else {
+          return Promise.reject(`Request rejected with status ${response.status}`);
         }
-        throw new Error('Network response was not ok.');
-      }).then(parsedJSON => {
-        var emails = parsedJSON.collection.items || []; //check emails.length > 0
-        return emails.map(email => ({
-          title: email.name,
-          subject: email.subjects.join('\n'),
-          id: email.id,
-          read: false
-        }));
+      })
+      .then(parsedJSON => {
+        var emails = parsedJSON.collection.items || [];
+        if (emails.length === 0) {
+          return Promise.reject("No collection items");
+        } else {
+          return emails.map(email => ({
+            title: email.name,
+            subject: email.subjects.join('\n'),
+            id: email.id,
+            read: false
+          }));
+        }
       }).then(emails =>
         this.setState({
           messages: emails,
           isLoading: false
         })
       ).catch(error => {
-        const msg = 'There has been a problem with your fetch operation: ' + error.message;
         this.setState({
-          isLoading: false,
-          fetchError: msg
+          isLoading: false
         });
-        this.props.history.push("/error");
+        this.props.history.push({
+          pathname: '/error',
+          state: { message: 'There has been a problem with your fetch operation: ' + error }
+        });
       });
-
   }
 
   handleSelectedMessage(message) {
@@ -83,6 +89,17 @@ class App extends Component {
 
         <Switch>
 
+          {/* Email list */}
+          <Route exact path="/" render={(props) => {
+            return (
+              <div className="container mt-5">
+                {
+                  isLoading ? <Loader /> : <MessageSelector data={messages} />
+                }
+              </div>
+            );
+          }} />
+
           {/* Email preview */}
           <Route path="/email/:id" render={(props) => {
             return (
@@ -95,17 +112,6 @@ class App extends Component {
             return (
               <Error data={fetchError} />
             )
-          }} />
-
-          {/* Email list */}
-          <Route exact path="/" render={(props) => {
-            return (
-              <div className="container mt-5">
-                {
-                  isLoading ? <Loader /> : <MessageSelector data={messages} />
-                }
-              </div>
-            );
           }} />
 
           {/* Invalid route */}

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Route, NavLink, Switch, withRouter } from "react-router-dom";
 
 import NoMatch from './NoMatch';
-import Error from './Error';
 import Loader from './Loader';
 
 import './MessagePreview.css';
@@ -24,7 +23,7 @@ class MessageContent extends Component {
 
 class Main extends Component {
     render() {
-        const { match, email, isLoading } = this.props;
+        const { match, email } = this.props;
         if (!email.isValid) {
             return <Route path="/" component={NoMatch} />
         }
@@ -61,7 +60,6 @@ class Main extends Component {
                             <MessageContent data={email.plain} isPlain={true} />
                         );
                     }} />
-                    <Route component={NoMatch} />
                 </Switch>
 
             </div>
@@ -74,7 +72,6 @@ class MessagePreview extends Component {
         super(props);
         this.state = {
             isLoading: true,
-            fetchError: '',
             email: {}
         };
     }
@@ -84,16 +81,18 @@ class MessagePreview extends Component {
     }
 
     fetchData() {
-        const { match: { params } } = this.props;
+        const { match: { params }, history } = this.props;
         const emailPath = `${githubUrl}email-${params.id}.json`;
 
         fetch(emailPath)
             .then(function (response) {
                 if (response.ok) {
                     return response.json();
+                } else {
+                    return Promise.reject(`Request rejected with status ${response.status}`);
                 }
-                throw new Error('Network response was not ok.');
-            }).then(parsedJSON =>
+            })
+            .then(parsedJSON => {
                 this.setState({
                     email: {
                         id: parsedJSON.id,
@@ -104,26 +103,27 @@ class MessagePreview extends Component {
                         isValid: true
                     },
                     isLoading: false
-                }))
+                })
+            })
             .catch(error => {
-                const msg = 'There has been a problem with your fetch operation: ' + error.message;
                 this.setState({
-                    isLoading: false,
-                    fetchError: msg
+                    isLoading: false
                 });
-                this.props.history.push("/error");
+                history.push({
+                    pathname: '/error',
+                    state: { message: 'There has been a problem with your fetch operation: ' + error }
+                });
             });
     }
 
     render() {
         const { match } = this.props;
-        const { isLoading, fetchError, email } = this.state;
+        const { isLoading, email } = this.state;
 
         return (
-
-            <Switch>
+            <div>
                 {/* Main */}
-                <Route path={match.url} render={(props) => {
+                <Route path={match.url} render={() => {
                     return (
                         <div className="message-preview container mt-5">
                             {
@@ -135,58 +135,7 @@ class MessagePreview extends Component {
                     )
                 }
                 } />
-
-                {/* Fetch error */}
-                <Route path={match.url + "/error"} render={(props) => {
-                    return (
-                        <Error data={fetchError} />
-                    )
-                }} />
-            </Switch >
-
-            // <div className={`message-preview container mt-5 ${isLoading ? 'is-loading' : ''}`}>
-
-            // <table className="table">
-            //     <tbody>
-            //         <tr>
-            //             <th className="text-nowrap" scope="row">Title:</th>
-            //             <td>{email.title}</td>
-            //         </tr>
-            //         <tr>
-            //             <th className="text-nowrap" scope="row">Subject:</th>
-            //             <td>{this.renderSubjects(email.subjects)}</td>
-            //         </tr>
-            //     </tbody>
-            // </table>
-
-            // <div className="nav btn-group">
-            //     <NavLink exact to={match.url} activeClassName="active" className="btn btn-primary">HTML</NavLink>
-            //     <NavLink exact to={match.url + "/plain"} activeClassName="active" className="btn btn-primary">Plain</NavLink>
-            // </div>
-
-            // {
-            //     !isLoading && email !== {} ? (
-
-            //         <Switch>
-            //             <Route exact path={match.url} render={(props) => {
-            //                 return (
-            //                     <MessageContent data={email.html} />
-            //                 );
-            //             }} />
-            //             <Route exact path={match.url + "/plain"} render={(props) => {
-            //                 return (
-            //                     <MessageContent data={email.plain} isPlain={true} />
-            //                 );
-            //             }} />
-            //             <Route component={NoMatch} />
-            //         </Switch>
-
-            //     ) : <div><p>No messages found</p></div>
-            // }
-
-            //     <Loader />
-
-            // </div>
+            </div >
         )
     }
 }
