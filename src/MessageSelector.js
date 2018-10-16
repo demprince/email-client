@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { Button } from "reactstrap";
 import './MessageSelector.css';
 
@@ -10,36 +10,36 @@ class Message extends Component {
     }
 
     handleChange() {
-        this.props.selectMessage(this.props.data);
+        this.props.history.push(`/email/${this.props.data.id}`);
     }
 
     render() {
         return (
-            <div className="Message">
-                <p className="message__title">{this.props.data.title}</p>
-                <p className="message__subject">{this.props.data.subject}</p>
+            <div className="message">
+                <div className="message__title">{this.props.data.title}</div>
+                <div className="message__subject">{this.props.data.subject}</div>
                 <Button className="message__more" onClick={this.handleChange}>More</Button>
-                {/* <Link className="message__more" to={`${match.url}/preview/${this.props.data.id}`}>More</Link> */}
-                {/* <Link className="message__more" onClick={this.handleChange} to={`/preview/${this.props.data.id}/html`}>More</Link> */}
             </div>
         )
     }
 }
+
 class MessageSelector extends Component {
     render() {
-        const { selectMessage } = this.props;
+        const { history } = this.props;
+
         const messages = this.props.data.map(function (item, idx) {
             return <Message
                 key={idx}
                 data={item}
-                className={item.selected ? 'selected' : ''}
-                selectMessage={selectMessage}
+                history={history}
             />
         })
+
         return (
-            <div className="page">
-                <h1>Message selector</h1>
-                <div className="MessageSelector">
+            <div className="page message-selector">
+                <h1 className="title">Available messages:</h1>
+                <div className="message-list">
                     {messages}
                 </div>
             </div>
@@ -47,4 +47,4 @@ class MessageSelector extends Component {
     }
 }
 
-export default MessageSelector;
+export default withRouter(MessageSelector);

@@ -1,31 +1,45 @@
-.MessageSelector {
-    /* background-color: gray; */
+.message-selector {
     width: 70%;
     max-width: 1100px;
     min-width: 300px;
     margin: auto;
 }
 
-.Message {
+.message-selector h1 {
+    font-size: 1.2em;
+    text-align: left;
+    padding: 1em;
+    color: white;
+}
+
+.message-list {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.12), 0 2px 3px 0 rgba(0,0,0,.16);
+}
+
+.message {
     display: grid;
-    grid-template-columns: 2fr 3fr 1fr;
-    padding: 0.6em;
+    grid-template-columns: 35% 35% 1fr;
+    align-items: center;
+
+    border-bottom: 1px solid;
+    text-align: left;
+    padding: 0.6em 1em;
+    width: 100%;
 }
 
-.Message__title {
-    padding: 0 1em;
+.message__title ,
+.message__subject {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.Message__subject {
-    padding: 0 1em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.message__subject {
+    white-space: pre-wrap;
 }
 
-.Message__button {
+.message__button {
     padding: 0;
 }

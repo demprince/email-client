@@ -1,0 +1,15 @@
+
+.pre-wrap {
+    padding: 1em;
+    box-sizing: border-box;
+    white-space: pre-wrap;
+}
+
+.message-preview .table, 
+.preview-panel {
+    margin: 1em auto;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.12), 0 2px 3px 0 rgba(0,0,0,.16);
+}
+

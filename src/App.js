@@ -1,23 +1,25 @@
 import React, { Component } from 'react';
 import { Route, NavLink, Switch } from "react-router-dom";
+
+import logo from './images/logo.png';
+
 import MessageSelector from './MessageSelector';
 import MessagePreview from './MessagePreview';
-import NoMatch from './NoMatch';
 
-const emailPath = "https://gist.githubusercontent.com/OrganicPanda/17da0fa8fda252972f9753c9e9738173/raw/f7198d502f40372c99273365f5f37ab0a6c63194/emails.json";
+import Loader from './Loader';
+import NoMatch from './NoMatch';
+import Error from './Error';
+
+const emailsUrl = "https://gist.githubusercontent.com/OrganicPanda/17da0fa8fda252972f9753c9e9738173/raw/f7198d502f40372c99273365f5f37ab0a6c63194/emails.json";
 
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      messages: [],
       isLoading: true,
-      messages: [
-        { title: "Some title 1", subjects: ["Some subject 1"], id: 0 },
-        { title: "Some title 2", subjects: ["Some subject 2"], id: 1 },
-        { title: "Some title 3", subjects: ["Some subject 3"], id: 2 },
-        { title: "Some title 4", subjects: ["Some subject 4"], id: 3 }
-      ],
+      fetchError: '',
       selectedMessageId: -1
     };
     this.handleSelectedMessage = this.handleSelectedMessage.bind(this); //bind context to handleSelectedMessage handler
@@ -27,38 +29,34 @@ class App extends Component {
     this.fetchData();
   }
 
-
   fetchData() {
 
-    /* this.setState({
-      messages: [],
-      isLoading: false
-    });
-    return false; */
-
-    fetch(emailPath)
+    fetch(emailsUrl)
       .then(function (response) {
         if (response.ok) {
           return response.json();
         }
         throw new Error('Network response was not ok.');
       }).then(parsedJSON => {
-        var collection = parsedJSON.collection || [];
-        return collection;
-      }).then(parsedCollection => {
-        var emails = parsedCollection.items || []; //check emails.length > 0
+        var emails = parsedJSON.collection.items || []; //check emails.length > 0
         return emails.map(email => ({
           title: email.name,
           subject: email.subjects.join('\n'),
-          id: email.id
+          id: email.id,
+          read: false
         }));
       }).then(emails =>
         this.setState({
           messages: emails,
           isLoading: false
-        }))
-      .catch(error => {
-        console.log('There has been a problem with your fetch operation: ', error.message);
+        })
+      ).catch(error => {
+        const msg = 'There has been a problem with your fetch operation: ' + error.message;
+        this.setState({
+          isLoading: false,
+          fetchError: msg
+        });
+        this.props.history.push("/error");
       });
 
   }
@@ -70,44 +68,53 @@ class App extends Component {
   }
 
   render() {
-    const { messages, isLoading } = this.state;
+    const { messages, isLoading, selectedMessageId, fetchError } = this.state;
 
     return (
+
       <div className="App">
-        <h1 className="App-header">Email client</h1>
 
-        <div className={`content ${isLoading ? 'is-loading' : ''}`}>
+        <NavLink exact to="/">
+          <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+            Email client
+          </header>
+        </NavLink>
 
-          <div className="nav">
-            <NavLink exact to="/" activeClassName="active">Home</NavLink>
-            <NavLink to="/preview" activeClassName="active">Preview</NavLink>
-          </div>
+        <Switch>
 
-          {
-            !isLoading && messages.length > 0 ? (
-              <Switch>
-                <Route exact path="/" render={(props) => {
-                  return (
-                    <MessageSelector data={messages} selectMessage={this.handleSelectedMessage} />
-                  );
-                }} />
-                <Route path="/preview" component={MessagePreview} />
-                <Route component={NoMatch} />
-              </Switch>
-            ) : <p>No messages found</p>
-          }
+          {/* Email preview */}
+          <Route path="/email/:id" render={(props) => {
+            return (
+              <MessagePreview data={selectedMessageId} />
+            );
+          }} />
 
-          <div className="loader">
-            <div className="icon"></div>
-          </div>
+          {/* Fetch error */}
+          <Route path="/error" render={(props) => {
+            return (
+              <Error data={fetchError} />
+            )
+          }} />
 
-        </div>
+          {/* Email list */}
+          <Route exact path="/" render={(props) => {
+            return (
+              <div className="container mt-5">
+                {
+                  isLoading ? <Loader /> : <MessageSelector data={messages} />
+                }
+              </div>
+            );
+          }} />
 
-        {/* <p>Selected id: {this.state.selectedMessageId}</p> */}
+          {/* Invalid route */}
+          <Route path="/" component={NoMatch} />
+
+        </Switch>
 
       </div>
     );
-
   }
 }
 
