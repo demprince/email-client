@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Route, NavLink, Switch } from "react-router-dom";
 
-import logo from './images/logo.png';
+import logo from 'images/logo.png';
+import './App.css';
 
 import MessageSelector from './MessageSelector';
 import MessagePreview from './MessagePreview';
 
-import Loader from './Loader';
-import NoMatch from './NoMatch';
-import Error from './Error';
+import Loader from 'components/Loader';
+import NoMatch from 'components/NoMatch';
+import Error from 'components/Error';
 
 const emailsUrl = "https://gist.githubusercontent.com/OrganicPanda/17da0fa8fda252972f9753c9e9738173/raw/f7198d502f40372c99273365f5f37ab0a6c63194/emails.json";
 

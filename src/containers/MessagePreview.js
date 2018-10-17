@@ -1,24 +1,13 @@
 import React, { Component } from 'react';
 import { Route, NavLink, Switch, withRouter } from "react-router-dom";
 
-import NoMatch from './NoMatch';
-import Loader from './Loader';
+import MessageDetail from 'components/MessageContent';
+import NoMatch from 'components/NoMatch';
+import Loader from 'components/Loader';
 
 import './MessagePreview.css';
 
 const githubUrl = "https://gist.githubusercontent.com/OrganicPanda/17da0fa8fda252972f9753c9e9738173/raw/f7198d502f40372c99273365f5f37ab0a6c63194/";
-
-
-class MessageContent extends Component {
-    render() {
-        const html = {
-            __html: this.props.data.replace('\n', '<br/>')
-        };
-        return (
-            <div className={this.props.isPlain ? 'pre-wrap preview-panel' : 'preview-panel'} dangerouslySetInnerHTML={html} />
-        );
-    }
-}
 
 class MessageContainer extends Component {
     render() {
@@ -53,12 +42,12 @@ class MessageContainer extends Component {
                 <Switch>
                     <Route exact path={match.url} render={(props) => {
                         return (
-                            <MessageContent data={email.html} />
+                            <MessageDetail data={email.html} /> /* Could send the composed iframe but need towork out how to listen to onLoad events to deal with the iframe height */
                         );
                     }} />
                     <Route exact path={match.url + "/plain"} render={(props) => {
                         return (
-                            <MessageContent data={email.plain} isPlain={true} />
+                            <MessageDetail data={email.plain} isPlain={true} />
                         );
                     }} />
                 </Switch>

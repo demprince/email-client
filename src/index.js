@@ -4,10 +4,9 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.css';
-import './index.css';
+import 'index.css';
 
-import './App.css';
-import App from './App';
+import App from 'containers/App';
 
 ReactDOM.render(
     <Router>
