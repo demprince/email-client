@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App should render correctly in "debug" mode 1`] = `
+<div
+  className="App"
+>
+  <NavLink
+    activeClassName="active"
+    aria-current="page"
+    exact={true}
+    to="/"
+  >
+    <header
+      className="App-header"
+    >
+      <img
+        alt="logo"
+        className="App-logo"
+        src="logo.png"
+      />
+      Email client
+    </header>
+  </NavLink>
+  <Switch>
+    <Route
+      exact={true}
+      path="/"
+      render={[Function]}
+    />
+    <Route
+      path="/email/:id"
+      render={[Function]}
+    />
+    <Route
+      path="/error"
+      render={[Function]}
+    />
+    <Route
+      component={[Function]}
+      path="/"
+    />
+  </Switch>
+</div>
+`;

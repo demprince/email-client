@@ -7,7 +7,7 @@ class NoMatch extends Component {
         return (
             <div className="container">
                 <div className="alert alert-warning mt-5" role="alert">
-                    No page matches route: <b>{location.pathname}</b>
+                    404: No page matches route: <b>{location.pathname}</b>
                 </div>
             </div>
         )
